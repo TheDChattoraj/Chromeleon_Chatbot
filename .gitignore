@@ -1,0 +1,15 @@
+__pycache__/
+bot_env/
+logs/
+minibot_env/
+notebooks/
+vector_store/
+*.env
+test.ipynb
+vector_db/
+uploads/
+src/retriever/__pycache__/
+src/rag/__pycache__/
+src/ingest/__pycache__/
+src/app/__pycache__/
+src/__pycache__/

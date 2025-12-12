@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chromeleon RAG Chat — Charlie.AI</title>
+  <link rel="stylesheet" href="./static/style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <!-- Brand -->
+      <div class="brand-left">
+        <div class="logo"></div>
+        <div class="brand-text">
+          <div class="brand-title">Charlie.AI</div>
+          <div class="brand-sub">Chromeleon & Ardia AI Assistant</div>
+        </div>
+      </div>
+
+      <!-- My library (moved to top under brand) -->
+      <div class="library-top">
+        <div class="library-title">My library</div>
+        <div id="recentList" class="recent-list">
+          <div class="recent-empty">No history yet — ask a question to see it here.</div>
+        </div>
+      </div>
+
+      <!-- Other navigation -->
+      <!-- <nav class="nav">
+        <button class="nav-btn active">New chat</button>
+        <button class="nav-btn">Agents</button>
+        <button class="nav-btn">Ask our Docs</button>
+        <button class="nav-btn">My docs</button>
+        <button class="nav-btn">Generative Tools</button>
+      </nav> -->
+
+      <!-- (Optional) secondary doc list below -->
+      <!-- <div class="library-bottom">
+        <div class="library-title small">Saved documents</div>
+        <ul class="doc-list" aria-hidden="false">
+          <li>Checking SQL Server versions</li>
+          <li>Troubleshooting Chromeleon</li>
+          <li>Fixing configuration failures</li>
+          <li>Software repair process</li>
+        </ul>
+      </div> -->
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="main">
+      <!-- HERO SECTION -->
+      <section class="hero">
+        <div class="hero-graphic" aria-hidden="true"></div>
+        <h1 class="hero-title">Hey there, how can I assist you today?</h1>
+        <p class="hero-desc">Enter a prompt in the chat box below or try one of our sample prompts.</p>
+
+        <!-- <div class="chips" id="sampleChips">
+          <button class="chip" data-q="Create a Project Plan">Create a Project Plan</button>
+          <button class="chip" data-q="ISO 9001 Compliance">ISO 9001 Compliance</button>
+          <button class="chip" data-q="Documentation Best Practices">Documentation Best Practices</button>
+          <button class="chip" data-q="Generate steps for an effective code review">Generate steps for an effective code review</button>
+        </div> -->
+      </section>
+
+      <!-- Chat panel -->
+      <section class="content">
+        <div id="chat" class="chat-area" role="log" aria-live="polite">
+          <!-- messages appended by your existing static/script.js -->
+        </div>
+
+        <div id="uploadResult" class="result-box" aria-hidden="true"></div>
+      </section>
+
+      <!-- Bottom input bar (IDs kept same for script.js) -->
+      <footer class="bottom-bar">
+        <div class="input-wrap">
+          <button id="attachBtn" class="attach-btn" title="Attach files">+</button>
+          <div id="fileChips" class="file-chips" aria-live="polite"></div>
+          <input id="question" class="text-input" type="text" placeholder="Ask a question about the documents..." />
+        </div>
+
+        <div class="controls">
+          <button id="send" class="send-btn">Send</button>
+          <!-- <button id="reindex" class="small">Reindex</button> -->
+        </div>
+
+        <!-- upload popover (keeps existing IDs) -->
+        <div id="uploadPop" class="upload-pop" role="dialog" aria-hidden="true">
+          <input id="realFileInput" type="file" multiple style="display:none" />
+          <label for="realFileInput" class="choose-files">Choose files</label>
+          <button id="clearFiles" class="small">Clear</button>
+          <div class="help">Select PDF / TXT / MD files. Click <strong>Upload & Index</strong> when ready.</div>
+          <div class="upload-actions">
+            <button id="uploadNow" class="primary">Upload & Index</button>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Keep your existing script file UNCHANGED -->
+  <script src="./static/script.js"></script>
+
+  <!-- Inline script: populate My library (recent user queries) from chat_history -->
+  <script>
+    (function () {
+      const getChatHistory = () => {
+        try {
+          if (typeof window !== "undefined" && Array.isArray(window.chat_history)) return window.chat_history;
+          if (typeof chat_history !== "undefined" && Array.isArray(chat_history)) return chat_history;
+        } catch (e) { /* ignore */ }
+        return null;
+      };
+
+      const container = document.getElementById("recentList");
+      const inputEl = document.getElementById("question");
+      if (!container) return;
+
+      function renderRecent() {
+        const hist = getChatHistory();
+        container.innerHTML = ""; // clear
+
+        if (!hist || hist.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "recent-empty";
+          empty.textContent = "No history yet — ask a question to see it here.";
+          container.appendChild(empty);
+          return;
+        }
+
+        const userQuestions = [];
+        // collect newest unique user queries
+        for (let i = hist.length - 1; i >= 0 && userQuestions.length < 40; i--) {
+          const item = hist[i];
+          let q = null;
+          if (Array.isArray(item) && item.length > 0) {
+            q = String(item[0]);
+          } else if (typeof item === "string") {
+            q = item;
+          } else if (item && typeof item === "object") {
+            if ("role" in item && item.role === "user" && "content" in item) q = String(item.content);
+            else if ("content" in item && item.role !== "assistant") q = String(item.content);
+          }
+          if (q) {
+            const t = q.trim();
+            if (t && !userQuestions.includes(t)) userQuestions.push(t);
+          }
+        }
+
+        const toShow = userQuestions.slice(0, 12); // show up to 12 recent items
+
+        toShow.forEach(text => {
+          const item = document.createElement("button");
+          item.className = "recent-item";
+          item.title = text;
+          item.textContent = text.length > 36 ? (text.slice(0, 33) + "...") : text;
+          item.addEventListener("click", () => {
+            if (inputEl) {
+              inputEl.value = text;
+              inputEl.focus();
+            }
+          });
+          container.appendChild(item);
+        });
+      }
+
+      // initial render
+      renderRecent();
+
+      // lightweight polling to refresh when chat_history length changes
+      let lastLen = (getChatHistory() || []).length;
+      setInterval(() => {
+        const cur = getChatHistory();
+        if (!cur) return;
+        if (cur.length !== lastLen) {
+          lastLen = cur.length;
+          renderRecent();
+        }
+      }, 1200);
+    })();
+  </script>
+</body>
+</html>

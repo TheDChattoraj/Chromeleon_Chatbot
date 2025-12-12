@@ -1,0 +1,17 @@
+pandas
+numpy
+langchain==0.2.0
+langchain-core==0.2.0
+langchain-openai==0.1.7
+langchain-community==0.2.0
+langchain-text-splitters==0.2.0
+ipykernel
+pypdf
+langchain-text-splitters
+python-dotenv
+faiss-cpu
+chromadb
+cryptography
+flask
+gunicorn
+playwright
