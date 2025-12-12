@@ -1,3 +1,6 @@
+/* ===========================================================
+   GLOBAL VARIABLES
+   =========================================================== */
 :root {
   --bg: #f3f6fb;
   --surface: #ffffff;
@@ -6,6 +9,14 @@
   --accent-soft: #e8f0ff;
   --shadow: 0 8px 28px rgba(9, 30, 66, 0.06);
   --radius: 14px;
+
+  /* Layout tuning */
+  --sidebar-width: 260px; /* left column width */
+  --app-padding: 18px; /* padding around entire app */
+  --app-gap: 20px; /* grid gap between sidebar and content */
+  --hero-min-height: 250px; /* adjust if hero height changes */
+  --bottom-height: 72px; /* bottom bar height */
+  --chat-vertical-gap: 40px;
 }
 
 * {
@@ -23,16 +34,20 @@ body {
   color: #0b1220;
 }
 
-/* app layout */
+/* ===========================================================
+   MAIN GRID LAYOUT
+   =========================================================== */
 .app {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: var(--sidebar-width) 1fr;
   height: 100vh;
-  gap: 20px;
-  padding: 18px;
+  gap: var(--app-gap);
+  padding: var(--app-padding);
 }
 
-/* --- sidebar --- */
+/* ===========================================================
+   SIDEBAR
+   =========================================================== */
 .sidebar {
   background: #fff;
   border-radius: 12px;
@@ -44,7 +59,7 @@ body {
   min-height: 0;
 }
 
-/* brand */
+/* Brand */
 .brand-left {
   display: flex;
   align-items: center;
@@ -73,7 +88,7 @@ body {
   color: var(--muted);
 }
 
-/* My library (top) */
+/* MY LIBRARY (RECENT HISTORY) */
 .library-top {
   display: flex;
   flex-direction: column;
@@ -87,8 +102,8 @@ body {
 }
 .recent-list {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 8px;
   max-width: 100%;
 }
 .recent-item {
@@ -109,7 +124,7 @@ body {
   font-size: 13px;
 }
 
-/* nav */
+/* NAVIGATION */
 .nav {
   display: flex;
   flex-direction: column;
@@ -132,7 +147,7 @@ body {
   background: rgba(11, 95, 255, 0.06);
 }
 
-/* secondary library bottom */
+/* SAVED DOCS SECTION */
 .library-bottom {
   margin-top: auto;
   width: 100%;
@@ -151,15 +166,18 @@ body {
   font-size: 13px;
 }
 
-/* --- main --- */
+/* ===========================================================
+   MAIN CONTENT
+   =========================================================== */
 .main {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 18px;
   min-height: 0;
 }
 
-/* hero */
+/* HERO SECTION */
 .hero {
   background: linear-gradient(
     180deg,
@@ -170,18 +188,17 @@ body {
   padding: 32px;
   box-shadow: var(--shadow);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
   gap: 12px;
-  min-height: 250px;
+  min-height: var(--hero-min-height);
 }
 .hero-graphic {
   width: 120px;
   height: 120px;
   border-radius: 16px;
-  background: 
-    url("../static/img/chat_img.png") center/contain no-repeat;
+  background: url("../static/img/chat_img.png") center/contain no-repeat;
   opacity: 0.9;
 }
 .hero-title {
@@ -213,33 +230,26 @@ body {
   font-size: 13px;
 }
 
-/* content area with chat box */
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: 0;
-}
+/* ===========================================================
+   CHAT AREA (FIXED)
+   =========================================================== */
 .chat-area {
+  position: fixed;
+  left: calc(var(--app-padding) + var(--sidebar-width) + var(--app-gap));
+  right: calc(var(--app-padding));
+  top: calc(var(--hero-min-height) + var(--chat-vertical-gap));
+  bottom: calc(var(--bottom-height) + var(--chat-vertical-gap));
+
   background: var(--surface);
   border-radius: 12px;
   padding: 20px;
-  flex: 1;
-  overflow: auto;
   box-shadow: var(--shadow);
-  min-height: 550px;
-}
-.result-box {
-  padding: 12px;
-  background: #fbfdff;
-  border-radius: 8px;
-  border: 1px solid rgba(11, 95, 255, 0.06);
-  font-family: monospace;
-  font-size: 13px;
-  display: none;
+  overflow: auto;
+  min-height: 200px;
+  z-index: 30;
 }
 
-/* messages */
+/* CHAT MESSAGES */
 .msg {
   margin: 12px 0;
   display: flex;
@@ -270,13 +280,34 @@ body {
   margin-top: 6px;
 }
 
-/* bottom input bar */
+/* UPLOAD RESULT BOX */
+.result-box {
+  padding: 12px;
+  background: #fbfdff;
+  border-radius: 8px;
+  border: 1px solid rgba(11, 95, 255, 0.06);
+  font-family: monospace;
+  font-size: 13px;
+  display: none;
+}
+
+/* ===========================================================
+   BOTTOM INPUT BAR (FIXED)
+   =========================================================== */
 .bottom-bar {
+  position: fixed;
+  left: calc(var(--app-padding) + var(--sidebar-width) + var(--app-gap));
+  right: calc(var(--app-padding));
+  bottom: calc(var(--app-padding));
+  height: var(--bottom-height);
+
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 4px 6px 4px;
+  padding: 10px;
+  z-index: 40;
 }
+
 .input-wrap {
   flex: 1;
   display: flex;
@@ -333,11 +364,11 @@ body {
   cursor: pointer;
 }
 
-/* upload popover */
+/* UPLOAD POPOVER */
 .upload-pop {
   position: fixed;
-  left: 110px;
-  bottom: 84px;
+  left: calc(var(--sidebar-width) - 30px);
+  bottom: calc(var(--bottom-height) + 40px);
   background: #fff;
   border-radius: 10px;
   padding: 12px;
@@ -376,25 +407,28 @@ body {
   cursor: pointer;
 }
 
+/* ===========================================================
+   THERMO FISHER LOGO (bottom of sidebar)
+   =========================================================== */
 .thermo-logo-container {
-  margin-top: auto;             /* push to bottom */
+  margin-top: auto;
   padding-top: 20px;
   padding-bottom: 10px;
   display: flex;
   justify-content: center;
 }
-
 .thermo-logo {
-  width: 200px;                 /* adjust size here */
-  opacity: 0.85;                /* slight soft look */
+  width: 200px;
+  opacity: 0.85;
   transition: opacity 0.2s ease;
 }
-
 .thermo-logo:hover {
   opacity: 1;
 }
 
-/* responsive */
+/* ===========================================================
+   RESPONSIVE FALLBACK
+   =========================================================== */
 @media (max-width: 900px) {
   .app {
     grid-template-columns: 1fr;
@@ -404,12 +438,16 @@ body {
   .sidebar {
     display: none;
   }
-  .upload-pop {
-    left: 12px;
-    width: calc(100% - 24px);
-  }
-  .hero {
-    padding: 20px;
-    min-height: 220px;
+
+  .chat-area,
+  .bottom-bar {
+    position: static;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
   }
 }
