@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}Sign in{% endblock %} — Chromeleon AI</title>
+
+    <!-- Link to the auth stylesheet -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='../static/style.css') }}"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="auth-root">
+      <aside class="auth-sidebar">
+        <div class="sidebar-top">
+          <div class="brand">
+            <!-- small avatar / product mark can go here -->
+            <div class="product-name">
+              <!-- <img src="{{ url_for('static', filename='../static/img/thermo_logo.png') }}" alt="Thermo Fisher" class="brand-logo"> -->
+            </div>
+          </div>
+          <div class="brand-left">
+            <div class="logo"></div>
+            <div class="brand-text">
+              <div class="brand-title">Charlie.AI</div>
+              <div class="brand-sub">Chromeleon & Ardia AI Assistant</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="thermo-logo-container">
+          <img
+            src="../static/img/thermo_logo.png"
+            alt="Thermo Fisher Scientific"
+            class="thermo-logo"
+          />
+        </div>
+      </aside>
+
+      <main class="auth-main">
+        <div class="auth-container">
+          <div class="auth-card">
+            <header class="auth-header">
+              <h1>
+                {% block heading %}Sign in with your Thermo Fisher Email{%
+                endblock %}
+              </h1>
+              <p class="lead">
+                {% block subheading %}Enter your work email to receive a
+                one-time code.{% endblock %}
+              </p>
+            </header>
+
+            <section class="auth-body">
+              {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+              <div class="flash-list">
+                {% for cat, msg in messages %}
+                <div class="flash {{ cat }}">{{ msg }}</div>
+                {% endfor %}
+              </div>
+              {% endif %} {% endwith %} {% block content %}{% endblock %}
+            </section>
+
+            <footer class="auth-footer">
+              <small
+                >Only <strong>@thermofisher.com</strong> addresses are
+                accepted.</small
+              >
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

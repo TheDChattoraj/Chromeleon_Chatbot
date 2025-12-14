@@ -17,6 +17,14 @@
   --hero-min-height: 250px; /* adjust if hero height changes */
   --bottom-height: 72px; /* bottom bar height */
   --chat-vertical-gap: 40px;
+  --auth-bg: #f4f9fc;
+  --auth-card: #ffffff;
+  --auth-muted: #6b7280;
+  --auth-accent: #1f6feb;
+  --auth-accent-2: #3b82f6;
+  --auth-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
 }
 
 * {
@@ -426,6 +434,194 @@ body {
   opacity: 1;
 }
 
+.auth-root {
+  display: flex;
+  min-height: 100vh;
+  align-items: stretch;
+  background: var(--auth-bg);
+}
+
+/* Sidebar */
+.auth-sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #fff 0%, #f3f7fb 100%);
+  border-right: 1px solid rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 18px;
+}
+.auth-sidebar .brand-logo {
+  width: 130px;
+  display: block;
+  margin-bottom: 14px;
+}
+.auth-sidebar .assistant-title {
+  font-weight: 700;
+  margin-top: 6px;
+}
+.auth-sidebar .assistant-sub {
+  font-size: 13px;
+  color: var(--auth-muted);
+  margin-top: 6px;
+}
+
+/* Main area */
+.auth-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px;
+}
+.auth-container {
+  width: 100%;
+  max-width: 980px;
+}
+.auth-card {
+  background: var(--auth-card);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: var(--auth-shadow);
+  border: 1px solid rgba(15, 23, 42, 0.03);
+}
+.auth-header h1 {
+  margin: 0;
+  font-size: 22px;
+  text-align: center;
+}
+.auth-lead {
+  margin-top: 6px;
+  color: var(--auth-muted);
+  font-size: 14px;
+}
+
+/* Form */
+.form {
+  margin-top: 18px;
+}
+.field-label {
+  display: block;
+  font-size: 13px;
+  color: var(--auth-muted);
+  margin-bottom: 6px;
+}
+.field-row {
+  margin-bottom: 12px;
+}
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6eef8;
+  background: #fbfdff;
+  font-size: 15px;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--auth-accent);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
+}
+.input-otp {
+  width: 220px;
+  letter-spacing: 6px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Buttons */
+.actions {
+  margin-top: 14px;
+}
+.actions-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.btn {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-primary {
+  background: linear-gradient(180deg, var(--auth-accent), var(--auth-accent-2));
+  color: white;
+}
+.btn-link {
+  background: none;
+  color: var(--auth-accent);
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+/* Flash */
+.flash-list {
+  margin-bottom: 10px;
+}
+.flash {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.flash.info {
+  background: #eef6ff;
+  color: #0b4db1;
+}
+.flash.warning {
+  background: #fff4e6;
+  color: #7a4a00;
+}
+.flash.danger {
+  background: #fff0f0;
+  color: #9b1b1b;
+}
+
+/* Footer small text */
+.auth-footer {
+  margin-top: 12px;
+  color: var(--auth-muted);
+  font-size: 13px;
+}
+
+/* ---- Logout button in top-right of hero ---- */
+.hero {
+  position: relative;
+} /* ensure hero is positioning context */
+
+.top-right-actions {
+  position: absolute;
+  right: 26px; /* adjust horizontal offset to match red box */
+  top: 20px; /* adjust vertical offset */
+  z-index: 20;
+}
+
+.btn-logout {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #d4d6d6, #d0d1d3);
+  color: #313030;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 6px 14px rgba(153, 154, 155, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+
+.btn-logout:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+}
+
 /* ===========================================================
    RESPONSIVE FALLBACK
    =========================================================== */
@@ -449,5 +645,11 @@ body {
     width: auto;
     height: auto;
     border-radius: 12px;
+  }
+  .auth-sidebar {
+    display: none;
+  }
+  .auth-container {
+    padding: 20px;
   }
 }

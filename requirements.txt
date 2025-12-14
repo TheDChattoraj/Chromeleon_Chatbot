@@ -13,5 +13,12 @@ faiss-cpu
 chromadb
 cryptography
 flask
+Flask-WTF
+Flask-Mail
+Flask-Limiter
+Flask-Session
+WTForms
+Werkzeug
 gunicorn
 playwright
+redis

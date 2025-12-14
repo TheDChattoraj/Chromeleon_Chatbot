@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Chromeleon RAG Chat — Charlie.AI</title>
-    <link rel="stylesheet" href="./static/style.css" />
+    <link rel="stylesheet" href="../static/style.css" />
   </head>
   <body>
     <div class="app">
@@ -63,11 +63,12 @@
         <!-- HERO SECTION -->
         <section class="hero">
           <div class="hero-graphic" aria-hidden="true"></div>
-          <h1 class="hero-title">Hey there, how can I assist you today?</h1>
-          <p class="hero-desc">
-            Enter a prompt in the chat box below or try one of our sample
-            prompts.
-          </p>
+          <div class="top-right-actions" aria-hidden="false">
+            <!-- GET logout so server redirects to /login and shows flash message -->
+            <a href="/logout" class="btn-logout" title="Log out">Log out</a>
+          </div>
+          <h1 class="hero-title">Hey {{email}}, how can I assist you today?</h1>
+          <p class="hero-desc">Enter a prompt in the chat box below.</p>
 
           <!-- <div class="chips" id="sampleChips">
           <button class="chip" data-q="Create a Project Plan">Create a Project Plan</button>
@@ -230,6 +231,68 @@
             renderRecent();
           }
         }, 1200);
+      })();
+    </script>
+
+    <script>
+      (function () {
+        // Only run on browsers that have at least fetch
+        if (!window.fetch) return;
+
+        const logoutUrl = "{{ url_for('logout') }}"; // Jinja should render this
+        let sent = false;
+
+        function doLogoutBeacon() {
+          if (sent) return;
+          sent = true;
+
+          // Try sendBeacon first
+          try {
+            if (navigator.sendBeacon) {
+              const ok = navigator.sendBeacon(
+                logoutUrl,
+                new Blob([], { type: "application/x-www-form-urlencoded" })
+              );
+              if (ok) return; // best-case: sent
+            }
+          } catch (e) {
+            // ignore and continue to fetch fallback
+            console.debug("sendBeacon failed", e);
+          }
+
+          // Fallback: fire-and-forget fetch with keepalive
+          try {
+            // keepalive works during unload in modern browsers and is more reliable than normal fetch
+            fetch(logoutUrl, { method: "POST", keepalive: true }).catch(
+              (err) => {
+                // this may still fail if browser does not allow network during unload
+                console.debug("fetch keepalive failed", err);
+              }
+            );
+          } catch (e) {
+            console.debug("fetch fallback error", e);
+          }
+        }
+
+        // Use visibilitychange (fires when page is hidden - covers tab-close & navigation)
+        document.addEventListener(
+          "visibilitychange",
+          function onVis() {
+            if (document.visibilityState === "hidden") {
+              doLogoutBeacon();
+            }
+          },
+          { passive: true }
+        );
+
+        // As a safety, also attach to unload (best-effort)
+        window.addEventListener(
+          "unload",
+          function () {
+            doLogoutBeacon();
+          },
+          { passive: true }
+        );
       })();
     </script>
   </body>

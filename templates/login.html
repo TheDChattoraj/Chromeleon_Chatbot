@@ -1,0 +1,24 @@
+{% extends "base_auth.html" %}
+{% block title %}Login{% endblock %}
+{% block heading %}Sign in with your Thermo Fisher Email{% endblock %}
+{% block content %}
+<form method="post" novalidate class="form">
+  {{ form.hidden_tag() }}
+
+  <label class="field-label">{{ form.email.label }}</label>
+  <div class="field-row">
+    {{ form.email(class="input", placeholder="you@thermofisher.com") }}
+  </div>
+  {% if form.email.errors %}
+    <div class="field-errors">
+      {% for err in form.email.errors %}
+        <div class="error">{{ err }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="actions">
+    {{ form.submit(class="btn btn-primary") }}
+  </div>
+</form>
+{% endblock %}
